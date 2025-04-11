@@ -1,7 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Cinzel+Decorative:wght@700;900&display=swap');
-
 [data-bs-theme=cornsilk] {
  color-scheme: light;
   --bs-body-font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
@@ -14,7 +10,8 @@
   --bs-info: #17a2b8;
   --bs-warning: #ffc107;
   --bs-danger: #dc3545;
-
+  --bs-nav-pills-link-color: #004080;
+  --bs-nav-pills-link-hover-color: #28a745; 
   --bs-heading-font-family: 'Montserrat', sans-serif;
   --bs-heading-font-weight: 700;
   --bs-heading-letter-spacing: 0.05em;
@@ -43,13 +40,51 @@ h1, h2, h3, h4, h5, h6 {
    text-transform: uppercase;
 }
 
-h1 { color: #3498db; }
-h2 { color: #e74c3c; }
-h3 { color: #6A4C93; }
-h4 { color: #e74c3c !important;  }
-h5 { color: #9b59b6; }
-h6 { color: #FF6B6B; }
+h1 { color: #00a2e8; }
+h2 { color: #00a2e8; }
+h3 { color: #ffcc00; }
+h4 { color: #ff4500 !important;  }
+h5 { color: ##7d5fff; }
+h6 { color: #00ffff; }
 
+.nav-pills .nav-link {
+  color: var(--bs-nav-pills-link-color);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.nav-pills .nav-link.active {
+  color: var(--bs-nav-pills-link-active-color);
+  background-color: #ffffff;
+}
+
+.nav-pills .nav-link:hover {
+  color: var(--bs-nav-pills-link-hover-color);
+  background-color: #e6f2ff;
+}
+
+#pluginLogTab {
+  color: #004080; 
+}
+
+#mihomoLogTab {
+  color: #800000; 
+}
+
+#singboxLogTab {
+  color: #006400; 
+}
+
+
+.nav-pills .nav-link.active {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+.nav-pills .nav-link:hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
 .row .btn-lg {
    color: #00bfff !important;
 }
@@ -100,18 +135,19 @@ h6 { color: #FF6B6B; }
 }
 
 .table thead th {
-   background: linear-gradient(45deg, #34495e, #2c3e50);
-   color: #ecf0f1;
-   border: none;
-   text-transform: uppercase;
-   letter-spacing: 1px;
-   font-weight: 600;
-   padding: 15px;
-   position: relative;
+  background-color: var(--bs-table-heading-bg);
+  color: var(--bs-table-heading-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 15px;
+  border: none;
+  margin-bottom: 10px;
 }
 
-.table tbody tr:nth-child(even) {
-   background-color: #f8f9fa;
+.table thead th {
+  color: #ffffff !important;  
+  background-color: #004080 !important;  
 }
 
 .table td {
@@ -445,6 +481,67 @@ h2.text-center {
 }
 
 @media (max-width: 767px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  h5 { font-size: 1.1rem; }
+  h6 { font-size: 1rem; }
+
+  .royal-style {
+    font-size: 40px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .table-3d {
+    font-size: 14px;
+  }
+
+  .table-3d td,
+  .table-3d th {
+    padding: 10px;
+  }
+
+  .container-bg {
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+@media (max-width: 575px) {
+  .container-sm.container-bg.callout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .container-sm.container-bg.callout a {
+    margin: 0.25rem 0;
+    display: block;
+    text-align: center;
+  }
+}
+
+@media (min-width: 992px) {
+  .container-sm.container-bg.callout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .container-sm.container-bg.callout a {
+    margin: 0 0.5rem;
+  }
+}
+
+@media (max-width: 767px) {
     .row.justify-content-md-center .col.input-group.mb-3.justify-content-md-center {
         display: flex;
         justify-content: center;
@@ -456,8 +553,25 @@ h2.text-center {
     }
 }
 
+.btn-info,
+.btn-success,
+.btn-danger {
+  color: #fff !important;
+}
+
+.btn-info:hover,
+.btn-success:hover,
+.btn-danger:hover,
+.btn-info:focus,
+.btn-success:focus,
+.btn-danger:focus {
+  color: #fff !important;
+}
+
 @media (max-width: 767px) {
     .btn {
         font-size: 10px; 
     }
 }
+
+

@@ -6,7 +6,7 @@ $logMessages = [];
 
 function logMessage($filename, $message) {
     global $logMessages;
-    $timestamp = date('H:i:s', strtotime('+8 hours'));
+    $timestamp = date('H:i:s');
     $logMessages[] = "[$timestamp] $filename: $message";
 }
 
@@ -20,40 +20,30 @@ function downloadFile($url, $destination, $retries = 3, $timeout = 30) {
                 mkdir($dir, 0755, true);
             }
 
-            $ch = curl_init($url);
-            curl_setopt_array($ch, [
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_TIMEOUT => $timeout,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            ]);
+            $command = sprintf(
+                "wget -q --timeout=%d --tries=%d --header='Accept-Charset: utf-8' -O %s %s",
+                $timeout, 
+                $retries, 
+                escapeshellarg($destination),
+                escapeshellarg($url)
+            );
 
-            $content = curl_exec($ch);
-            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $output = [];
+            $return_var = null;
+            exec($command, $output, $return_var);
             
-            if ($content === false) {
-                throw new Exception("下载失败: " . curl_error($ch));
+            if ($return_var !== 0) {
+                throw new Exception("wget error message: " . implode("\n", $output));
             }
             
-            if ($httpCode !== 200) {
-                throw new Exception("HTTP 响应码错误: $httpCode");
-            }
-            
-            if (file_put_contents($destination, $content) === false) {
-                throw new Exception("无法保存文件到 $destination");
-            }
-            
-            curl_close($ch);
-            logMessage(basename($destination), "下载并保存成功");
+            logMessage(basename($destination), "Download and save successful");
             return true;
             
         } catch (Exception $e) {
-            logMessage(basename($destination), "第 $attempt 次尝试失败: " . $e->getMessage());
-            curl_close($ch);
+            logMessage(basename($destination), "Attempt $attempt failed: " . $e->getMessage());
             
             if ($attempt === $retries) {
-                logMessage(basename($destination), "所有下载尝试均失败");
+                logMessage(basename($destination), "All download attempts failed");
                 return false;
             }
             
@@ -65,24 +55,24 @@ function downloadFile($url, $destination, $retries = 3, $timeout = 30) {
     return false;
 }
 
-echo "开始更新配置文件...\n";
+echo "Start updating configuration file...\n";
 
 $urls = [
-    "https://raw.githubusercontent.com/Thaolga/openwrt-nekobox/nekobox/luci-app-nekobox/root/etc/neko/config/mihomo.yaml" => "/etc/neko/config/mihomo.yaml",
+    "https://raw.githubusercontent.com/Thaolga/openwrt-nekobox/refs/heads/main/luci-app-nekobox/root/etc/neko/config/mihomo.yaml" => "/etc/neko/config/mihomo.yaml",
     "https://raw.githubusercontent.com/Thaolga/openwrt-nekobox/nekobox/luci-app-nekobox/root/etc/neko/config/Puernya.json" => "/etc/neko/config/Puernya.json"
 ];
 
 foreach ($urls as $url => $destination) {
-    logMessage(basename($destination), "开始从 $url 下载");
+    logMessage(basename($destination), "Start downloading from $url");
     
     if (downloadFile($url, $destination)) {
-        logMessage(basename($destination), "文件更新成功");
+        logMessage(basename($destination), "File update successful");
     } else {
-        logMessage(basename($destination), "文件更新失败");
+        logMessage(basename($destination), "File update failed");
     }
 }
 
-echo "\n配置文件更新完成！\n\n";
+echo "\nConfiguration file update completed！\n\n";
 
 foreach ($logMessages as $message) {
     echo $message . "\n";

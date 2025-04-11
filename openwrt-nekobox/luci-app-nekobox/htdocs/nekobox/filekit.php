@@ -263,7 +263,7 @@ function getDirectoryContents($dir) {
                 if (!is_dir($path)) {
                     $size = formatSize(filesize($path));
                 }
-                $mtime = date("Y-m-d H:i:s", filemtime($path) + 8 * 60 * 60);
+                $mtime = date("Y-m-d H:i:s", filemtime($path));
                 $owner = function_exists('posix_getpwuid') ? posix_getpwuid(fileowner($path))['name'] : fileowner($path);
             }
             $contents[] = array(
@@ -1153,15 +1153,7 @@ function searchFiles($dir, $term) {
      </style>
   </head>
 <body>
-<div class="container-sm container-bg callout  border border-3 rounded-4 col-11">
-    <div class="row">
-        <a href="./index.php" class="col btn btn-lg" data-translate="home"><i class="fas fa-home"></i> Home</a>
-        <a href="./mihomo_manager.php" class="col btn btn-lg"><i class="fas fa-folder"></i> Mihomo</a>
-        <a href="./singbox_manager.php" class="col btn btn-lg"><i class="fas fa-folder-open"></i> Sing-box</a>
-        <a href="./box.php" class="col btn btn-lg" data-translate="convert"><i class="fas fa-exchange-alt"></i> Convert</a>
-        <a href="./filekit.php" class="col btn btn-lg" data-translate="fileAssistant"><i class="fas fa-file-alt"></i> File Assistant</a>
-    </div>
-</div>
+
 <div class="row">
     <div class="col-12">  
         <div class="container container-bg border border-3 rounded-4 p-3">

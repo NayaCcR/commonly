@@ -6,7 +6,7 @@ $logMessages = [];
 
 function logMessage($filename, $message) {
     global $logMessages;
-    $timestamp = date('H:i:s', strtotime('+8 hours'));
+    $timestamp = date('H:i:s');
     $logMessages[] = "[$timestamp] $filename: $message";
 }
 
@@ -64,7 +64,7 @@ class MultiDownloader {
                 if (!is_dir($dir)) {
                     mkdir($dir, 0755, true);
                 }
-                logMessage(basename($download['destination']), "开始下载");
+                logMessage(basename($download['destination']), "Start downloadin");
                 $this->createHandle($download['url'], $download['destination']);
             }
             
@@ -86,9 +86,9 @@ class MultiDownloader {
                 
                 if ($httpCode === 200 && $content !== false) {
                     if (file_put_contents($info['destination'], $content) !== false) {
-                        logMessage(basename($info['destination']), "下载成功");
+                        logMessage(basename($info['destination']), "Download successful");
                     } else {
-                        logMessage(basename($info['destination']), "保存失败");
+                        logMessage(basename($info['destination']), "Save failed");
                         if (!isset($this->retries[$info['url']]) || $this->retries[$info['url']] < $this->maxRetries) {
                             $this->retries[$info['url']] = isset($this->retries[$info['url']]) ? $this->retries[$info['url']] + 1 : 1;
                             $this->urls[] = [
@@ -99,7 +99,7 @@ class MultiDownloader {
                         }
                     }
                 } else {
-                    logMessage(basename($info['destination']), "下载失败 (HTTP $httpCode)");
+                    logMessage(basename($info['destination']), "Download failed (HTTP $httpCode)");
                     if (!isset($this->retries[$info['url']]) || $this->retries[$info['url']] < $this->maxRetries) {
                         $this->retries[$info['url']] = isset($this->retries[$info['url']]) ? $this->retries[$info['url']] + 1 : 1;
                         $this->urls[] = [
@@ -123,54 +123,29 @@ class MultiDownloader {
     }
 }
 
-echo "开始更新规则集...\n";
+echo "Start updating the rule set...\n";
 $urls = [
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/ads.srs" => "/www/nekobox/rules/ads.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/ai.srs" => "/www/nekobox/rules/ai.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/apple-cn.srs" => "/www/nekobox/rules/apple-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/applications.srs" => "/www/nekobox/rules/applications.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/cn.srs" => "/www/nekobox/rules/cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/cnip.srs" => "/www/nekobox/rules/cnip.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/disney.srs" => "/www/nekobox/rules/disney.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/fakeip-filter.srs" => "/www/nekobox/rules/fakeip-filter.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/games-cn.srs" => "/www/nekobox/rules/games-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/google-cn.srs" => "/www/nekobox/rules/google-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/microsoft-cn.srs" => "/www/nekobox/rules/microsoft-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/netflix.srs" => "/www/nekobox/rules/netflix.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/networktest.srs" => "/www/nekobox/rules/networktest.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/private.srs" => "/www/nekobox/rules/private.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/privateip.srs" => "/www/nekobox/rules/privateip.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/proxy.srs" => "/www/nekobox/rules/proxy.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/telegramip.srs" => "/www/nekobox/rules/telegramip.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/tiktok.srs" => "/www/nekobox/rules/tiktok.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/youtube.srs" => "/www/nekobox/rules/youtube.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/geosite/tiktok.srs" => "/www/nekobox/rules/geosite/tiktok.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/geosite/netflix.srs" => "/www/nekobox/rules/geosite/netflix.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite/geosite-cn.srs" => "/www/nekobox/geosite/geosite-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/ads.srs" => "/www/nekobox/ads.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/cache.db" => "/www/nekobox/cache.db",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/cn.srs" => "/www/nekobox/cn.srs", 
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/cnip.srs" => "/www/nekobox/cnip.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geoip-apple.srs" => "/www/nekobox/geoip-apple.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geoip-cn.srs" => "/www/nekobox/geoip-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geoip-google.srs" => "/www/nekobox/geoip-google.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geoip-netflix.srs" => "/www/nekobox/geoip-netflix.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geoip-telegram.srs" => "/www/nekobox/geoip-telegram.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geoip-tiktok.srs" => "/www/nekobox/geoip-tiktok.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-apple.srs" => "/www/nekobox/geosite-apple.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-bilibili.srs" => "/www/nekobox/geosite-bilibili.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-cn.srs" => "/www/nekobox/geosite/geosite-cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-disney.srs" => "/www/nekobox/geosite-disney.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-geolocation-!cn.srs" => "/www/nekobox/geosite-geolocation-!cn.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-github.srs" => "/www/nekobox/geosite-github.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-google.srs" => "/www/nekobox/geosite-google.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-microsoft.srs" => "/www/nekobox/geosite-microsoft.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-netflix.srs" => "/www/nekobox/geosite-netflix.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-openai.srs" => "/www/nekobox/geosite-openai.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-telegram.srs" => "/www/nekobox/geosite-telegram.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-tiktok.srs" => "/www/nekobox/geosite-tiktok.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite-youtube.srs" => "/www/nekobox/geosite-youtube.srs",
-    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/geosite.db" => "/www/nekobox/geosite.db"
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/ads.srs" => "/etc/neko/rules/ads.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/ai.srs" => "/etc/neko/rules/ai.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/apple-cn.srs" => "/etc/neko/rules/apple-cn.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/applications.srs" => "/etc/neko/rules/applications.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/cn.srs" => "/etc/neko/rules/cn.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/cnip.srs" => "/etc/neko/rules/cnip.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/disney.srs" => "/etc/neko/rules/disney.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/fakeip-filter.srs" => "/etc/neko/rules/fakeip-filter.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/games-cn.srs" => "/etc/neko/rules/games-cn.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/google-cn.srs" => "/etc/neko/rules/google-cn.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/microsoft-cn.srs" => "/etc/neko/rules/microsoft-cn.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/netflix.srs" => "/etc/neko/rules/netflix.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/networktest.srs" => "/etc/neko/rules/networktest.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/private.srs" => "/etc/neko/rules/private.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/privateip.srs" => "/etc/neko/rules/privateip.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/proxy.srs" => "/etc/neko/rules/proxy.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/telegramip.srs" => "/etc/neko/rules/telegramip.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/tiktok.srs" => "/etc/neko/rules/tiktok.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/youtube.srs" => "/etc/neko/rules/youtube.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/geosite/tiktok.srs" => "/etc/neko/rules/geosite/tiktok.srs",
+    "https://raw.githubusercontent.com/Thaolga/neko/luci-app-neko/nekobox/rules/geosite/netflix.srs" => "/etc/neko/rules/geosite/netflix.srs"
 ];
 
 $downloader = new MultiDownloader(8);
@@ -181,7 +156,7 @@ foreach ($urls as $url => $destination) {
 
 $downloader->start();
 
-echo "\n规则集更新完成！\n\n";
+echo "\nRule set update completed！\n\n";
 
 foreach ($logMessages as $message) {
     echo $message . "\n";

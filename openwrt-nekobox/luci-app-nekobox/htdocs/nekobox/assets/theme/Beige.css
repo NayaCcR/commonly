@@ -1,7 +1,4 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Cinzel+Decorative:wght@700;900&display=swap');
-
 [data-bs-theme=Beige] {
   color-scheme: light;
   --bs-body-font-family: 'Roboto', sans-serif;
@@ -51,6 +48,11 @@ h1, h2, h3, h4, h5, h6 {
   text-transform: var(--bs-heading-text-transform);
   color: var(--bs-primary);
   margin-bottom: 1rem;
+}
+
+.table thead th {
+  color: #ffffff !important;  
+  background-color: #D2B48C !important;  
 }
 
 .table {
